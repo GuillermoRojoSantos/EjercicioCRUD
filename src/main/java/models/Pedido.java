@@ -5,15 +5,10 @@
 package models;
 
 
-/**
- * @author AlejandroMarínBermúd
- * @author GuillermoRojoSantos
- */
-
 public class Pedido {
 
-    private Integer id;
-    
+    private int id;
+
     private String producto;
     private String alumno;
     private String fecha;
@@ -22,14 +17,14 @@ public class Pedido {
 
 
     public Pedido() {
-        
+
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -78,6 +73,5 @@ public class Pedido {
         return "Pedido{" + "id=" + id + ", pedido=" + producto + ", alumno=" + alumno + ", fecha=" + fecha + ", precio=" + precio + ", estado=" + estado + '}';
     }
 
-    
-    
+
 }

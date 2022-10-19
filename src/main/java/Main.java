@@ -2,6 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
+package Ejercicio2;
+
 
 
 import Ejercicio2.controllers.PedidoDAOMySQL;
@@ -33,7 +35,7 @@ public class Main {
         
          PedidoDAOMySQL daoSQL = new  PedidoDAOMySQL();
            
-           daoSQL.nuevo();
+           daoSQL.get_mejorC();
     }
 }
 

@@ -4,15 +4,10 @@
  */
 package models;
 
-
-/**
- * @author AlejandroMarínBermúd
- * @author GuillermoRojoSantos
- */
-
 public class Producto {
 
     private Integer p_id;
+
     private String nombre;
     private float precio;
 
