@@ -30,7 +30,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public static final String nuevo_pedido = "INSERT INTO `comanda` (`Alumno`, `Producto`, `Fecha`, `Precio`, `Estado`) VALUES ( ?, ?, ?, ?, ?);";
     public static final String eliminar_pedido = "DELETE FROM `comanda` WHERE id=?";
     public static final String marcar_pedido = "UPDATE `comanda` SET `Estado` = 'Entregado' WHERE `comanda`.`id` =? ";
-    public static final String pendientes = "SELECT * FROM `comanda` WHERE Estado = \"Pendiente\";";
+    public static final String pendientes = "SELECT * FROM `comanda` WHERE Estado = 'Pendiente';";
     public static final String pedidos_alumno = "SELECT Count(Producto) FROM `comanda` WHERE Alumno = ?;";
     public static final String ganancias_mes = "SELECT SUM(Precio) FROM `comanda` WHERE month(Fecha) = MONTH(CURRENT_DATE());";
     public static final String total_clientes = "SELECT count(DISTINCT(Alumno)) FROM `comanda`;";
