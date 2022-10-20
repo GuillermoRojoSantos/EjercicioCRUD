@@ -7,7 +7,6 @@ package models;
 public class Producto {
 
     private Integer p_id;
-
     private String nombre;
     private float precio;
 
