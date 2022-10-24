@@ -1,10 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
- */
 package controllers;
 
 import models.Pedido;
+import java.util.ArrayList;
+
+/**
+ * @author Alejandro Marín Bermúd
+ * @author Guillermo Rojo Santos
+ */
 
 public interface PedidoDAO {
 
@@ -14,6 +16,10 @@ public interface PedidoDAO {
     void eliminar();
 
     void marcar();
+
+    ArrayList<Pedido> get_AllPedidos();
+
+    ArrayList<String> get_AllAlumnos();
 
     Pedido get_pendiente();
 

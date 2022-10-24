@@ -1,25 +1,20 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Other/File.java to edit this template
- */
 package controllers;
 
 import models.Pedido;
 import models.Producto;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
 
 /**
- * @author AlejandroMarínBermúd
+ * @author Alejandro Marín Bermúd
+ * @author Guillermo Rojo Santos
  */
 public class PedidoDAOMySQL implements PedidoDAO {
     private static final String USER = "root";
@@ -29,7 +24,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
     public static final String nuevo_pedido = "INSERT INTO `comanda` (`Alumno`, `Producto`, `Fecha`, `Precio`, `Estado`) VALUES ( ?, ?, ?, ?, ?);";
     public static final String eliminar_pedido = "DELETE FROM `comanda` WHERE id=?";
-    public static final String marcar_pedido = "UPDATE `comanda` SET `Estado` = 'Entregado' WHERE `comanda`.`id` =? ";
+    public static final String marcar_pedido = "UPDATE `comanda` SET `Estado` = 'ENTREGADO' WHERE `comanda`.`id` =? ";
     public static final String pendientes = "SELECT * FROM `comanda` WHERE Estado = 'Pendiente';";
     public static final String pedidos_alumno = "SELECT Count(Producto) FROM `comanda` WHERE Alumno = ?;";
     public static final String ganancias_mes = "SELECT SUM(Precio) FROM `comanda` WHERE month(Fecha) = MONTH(CURRENT_DATE());";
@@ -37,6 +32,8 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public static final String mejor_cliente = "SELECT Count(Alumno) as Mejor, Alumno FROM `comanda`Group by Alumno ORDER by Mejor DESC LIMIT 1;";
     public static final String pedidos_semana = "SELECT Count(id) FROM `comanda`WHERE week(Fecha) = week(CURRENT_DATE());";
     public static final String mas_vendido = "SELECT Count(Producto) as Mas_vendido, Producto FROM `comanda` GROUP by Producto ORDER by Mas_vendido DESC LIMIT 1;";
+    public static final String get_all = "select * from comanda;";
+    public static final String get_Alumnos = "select Alumno from comanda group by Alumno;";
 
     static {
         try {
@@ -54,28 +51,33 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public void nuevo() {
 
         try (var pst = conexion.prepareStatement(nuevo_pedido, RETURN_GENERATED_KEYS)) {
-            Scanner sc = new Scanner(System.in);
+            Scanner sci = new Scanner(System.in);
             Pedido p = new Pedido();
+            ProductoDAOMySQL prod = new ProductoDAOMySQL();
 
             System.out.println("Introduce un alumno");
-            String alumno = sc.nextLine();
+            String alumno = sci.nextLine();
             p.setAlumno(alumno);
 
-            System.out.println("Introduce un Producto");
-            String producto = sc.nextLine();
-            p.setProducto(producto);
-
             System.out.println("Introduce una Fecha");
-            String fecha = sc.nextLine();
+            String fecha = sci.nextLine();
             p.setFecha(fecha);
 
-            System.out.println("Introduce el Precio");
-            Float precio = sc.nextFloat();
-            p.setPrecio(precio);
-
-            System.out.println("Introduce el Estado");
-            String estado = sc.next();
+            System.out.println("Introduce el Estado (Pendiente/Terminado)");
+            String estado = sci.next().toUpperCase();
             p.setEstado(estado);
+
+            System.out.println("Introduce un Producto (el id)");
+            int id = sci.nextInt();
+            //String nombre = sci.nextLine();
+            p.setProducto(prod.getNombre(id));
+
+            System.out.println("Introduce el Precio");
+            //Float precio = sci.nextFloat();
+            p.setPrecio(prod.getPrecio(id));
+
+
+            sci.close();
 
             pst.setString(1, p.getAlumno());
             pst.setString(2, p.getProducto());
@@ -104,7 +106,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
         try (var pst = conexion.prepareStatement(eliminar_pedido)) {
 
             Scanner sc = new Scanner(System.in);
-            Pedido p = new Pedido();
 
             System.out.println("Introduce un Id");
             int id = sc.nextInt();
@@ -152,10 +153,44 @@ public class PedidoDAOMySQL implements PedidoDAO {
     }
 
     @Override
+    public ArrayList<Pedido> get_AllPedidos() {
+        var result = new ArrayList<Pedido>();
+        try (var pst = conexion.prepareStatement(get_all)) {
+            ResultSet resultSet = pst.executeQuery();
+            while (resultSet.next()) {
+                var Pedido = new Pedido();
+                Pedido.setId(resultSet.getInt("id"));
+                Pedido.setAlumno(resultSet.getString("Alumno"));
+                Pedido.setProducto(resultSet.getString("Producto"));
+                Pedido.setFecha(resultSet.getString("Fecha"));
+                Pedido.setPrecio(resultSet.getFloat("Precio"));
+                Pedido.setEstado(resultSet.getString("Estado"));
+
+                result.add(Pedido);
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+        return result;
+    }
+
+    @Override
+    public ArrayList<String> get_AllAlumnos() {
+        var result = new ArrayList<String>();
+        try (var pst = conexion.prepareStatement(get_Alumnos)) {
+            ResultSet resultSet = pst.executeQuery();
+            while (resultSet.next()) {
+                result.add(resultSet.getString("Alumno"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    @Override
     public Pedido get_pendiente() {
         try (var pst = conexion.prepareStatement(pendientes)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.println("Pedidos Pendientes de entrega: ");
 
             ResultSet resultado = pst.executeQuery();
@@ -211,8 +246,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_ganancias() {
 
         try (var pst = conexion.prepareStatement(ganancias_mes)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.print("La ganacia total del mes es de: ");
 
             ResultSet resultado = pst.executeQuery();
@@ -235,8 +268,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_totalC() {
 
         try (var pst = conexion.prepareStatement(total_clientes)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.println("La cantidad de Clientes es de: ");
 
             ResultSet resultado = pst.executeQuery();
@@ -257,8 +288,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_mejorC() {
 
         try (var pst = conexion.prepareStatement(mejor_cliente)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.println("El mejor Clientes es: ");
 
             ResultSet resultado = pst.executeQuery();
@@ -280,8 +309,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_pedidoS() {
 
         try (var pst = conexion.prepareStatement(pedidos_semana)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.print("Numero de pedidos de esta semana: ");
 
             ResultSet resultado = pst.executeQuery();
@@ -303,8 +330,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_masV() {
 
         try (var pst = conexion.prepareStatement(mas_vendido)) {
-
-            Scanner sc = new Scanner(System.in);
             System.out.print("El producto mas vendido es ");
 
             ResultSet resultado = pst.executeQuery();
@@ -321,6 +346,5 @@ public class PedidoDAOMySQL implements PedidoDAO {
         }
         return null;
     }
-
 
 }
