@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/0ea6e7a2-e464-4cf9-8b92-9b26fa60e2cf/console.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/java/controllers/PedidoDAOMySQL.java" dialect="MySQL" />
   </component>
 </project>
