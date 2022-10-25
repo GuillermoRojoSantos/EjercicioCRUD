@@ -21,9 +21,9 @@ public interface PedidoDAO {
 
     ArrayList<String> get_AllAlumnos();
 
-    Pedido get_pendiente();
+    ArrayList<Pedido> get_pendiente();
 
-    Pedido get_pedidoA();
+    ArrayList<Pedido> get_pedidoA(String alumno);
 
     Pedido get_ganancias();
 

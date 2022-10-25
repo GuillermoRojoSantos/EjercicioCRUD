@@ -122,20 +122,11 @@ public class PedidoDAOMySQL implements PedidoDAO {
     }
 
     @Override
-    public void marcar() {
-
-        Scanner sc = new Scanner(System.in);
+    public void marcar(int id) {
 
 
         try (var pst = conexion.prepareStatement(marcar_pedido)) {
-
-            System.out.println("Introduce un Id");
-            int id = sc.nextInt();
-
-
             pst.setInt(1, id);
-
-
             if (pst.executeUpdate() == 0) {
                 Logger.getLogger(PedidoDAOMySQL.class.getName()).severe("Pedido no existe.");
             } else {
@@ -185,56 +176,50 @@ public class PedidoDAOMySQL implements PedidoDAO {
     }
 
     @Override
-    public Pedido get_pendiente() {
+    public ArrayList<Pedido> get_pendiente() {
+        var resultado = new ArrayList<Pedido>();
         try (var pst = conexion.prepareStatement(pendientes)) {
-            System.out.println("Pedidos Pendientes de entrega: ");
+            ResultSet resultSet = pst.executeQuery();
 
-            ResultSet resultado = pst.executeQuery();
-
-            while (resultado.next()) {
-
-                Pedido pedido = new Pedido();
-
-                System.out.println(resultado.getInt("id") + " " +
-                        resultado.getString("Alumno") + " " +
-                        resultado.getString("Producto") + " " +
-                        resultado.getString("Fecha") + " " + resultado.getInt("Precio")
-                        + " " + resultado.getString("Estado"));
+            while (resultSet.next()) {
+                var pedido = new Pedido();
+                pedido.setId(resultSet.getInt("id"));
+                pedido.setAlumno(resultSet.getString("Alumno"));
+                pedido.setProducto(resultSet.getString("Producto"));
+                pedido.setFecha(resultSet.getString("Fecha"));
+                pedido.setPrecio(resultSet.getFloat("Precio"));
+                pedido.setEstado(resultSet.getString("Estado"));
+                resultado.add(pedido);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAOMySQL.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return resultado;
     }
 
     @Override
-    public Pedido get_pedidoA() {
+    public ArrayList<Pedido> get_pedidoA(String alumno) {
+        var resultado = new ArrayList<Pedido>();
+
         try (var pst = conexion.prepareStatement(pedidos_alumno)) {
-
-            Scanner sc = new Scanner(System.in);
-            System.out.println("Introduce un alumno");
-            String alumno = sc.nextLine();
-
             pst.setString(1, alumno);
-            ResultSet resultado = pst.executeQuery();
-
-            if (resultado.next()) {
-
-                Pedido pedido = new Pedido();
-                Producto producto = new Producto();
-
-                System.out.println(resultado.getInt("Count(Producto)"));
-            } else {
-                return null;
+            ResultSet resultSet = pst.executeQuery();
+            while (resultSet.next()) {
+                var pedido = new Pedido();
+                pedido.setId(resultSet.getInt("id"));
+                pedido.setAlumno(resultSet.getString("Alumno"));
+                pedido.setProducto(resultSet.getString("Producto"));
+                pedido.setFecha(resultSet.getString("Fecha"));
+                pedido.setPrecio(resultSet.getFloat("Precio"));
+                pedido.setEstado(resultSet.getString("Estado"));
+                resultado.add(pedido);
             }
-
-
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAOMySQL.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("");
 
-        return null;
+        return resultado;
 
     }
 
