@@ -227,7 +227,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_ganancias() {
 
         try (var pst = conexion.prepareStatement(ganancias_mes)) {
-            System.out.print("La ganacia total del mes es de: ");
+
 
             ResultSet resultado = pst.executeQuery();
 
@@ -235,8 +235,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
                 Pedido pedido = new Pedido();
 
-                System.out.print(resultado.getInt("SUM(Precio)"));
-                System.out.println("euros");
+                System.out.printf("La ganacia total del mes es de: %d €%n", resultado.getInt("SUM(Precio)"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAOMySQL.class.getName()).log(Level.SEVERE, null, ex);
@@ -249,7 +248,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_totalC() {
 
         try (var pst = conexion.prepareStatement(total_clientes)) {
-            System.out.println("La cantidad de Clientes es de: ");
 
             ResultSet resultado = pst.executeQuery();
 
@@ -257,7 +255,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
                 Pedido pedido = new Pedido();
 
-                System.out.print(resultado.getInt("count(DISTINCT(Alumno))"));
+                System.out.printf("La cantidad de Clientes es de: %d%n", resultado.getInt("count(DISTINCT(Alumno))"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAOMySQL.class.getName()).log(Level.SEVERE, null, ex);
@@ -269,7 +267,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_mejorC() {
 
         try (var pst = conexion.prepareStatement(mejor_cliente)) {
-            System.out.println("El mejor Clientes es: ");
 
             ResultSet resultado = pst.executeQuery();
 
@@ -277,7 +274,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
                 Pedido pedido = new Pedido();
 
-                System.out.print(resultado.getString("Alumno"));
+                System.out.printf("El mejor Clientes es: %s%n", resultado.getString("Alumno"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoDAOMySQL.class.getName()).log(Level.SEVERE, null, ex);
@@ -290,7 +287,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_pedidoS() {
 
         try (var pst = conexion.prepareStatement(pedidos_semana)) {
-            System.out.print("Numero de pedidos de esta semana: ");
 
             ResultSet resultado = pst.executeQuery();
 
@@ -298,7 +294,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
                 Pedido pedido = new Pedido();
 
-                System.out.print(resultado.getString("Count(id)"));
+                System.out.printf("Numero de pedidos de esta semana: %s%n", resultado.getString("Count(id)"));
 
             }
         } catch (SQLException ex) {
@@ -311,7 +307,6 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public Pedido get_masV() {
 
         try (var pst = conexion.prepareStatement(mas_vendido)) {
-            System.out.print("El producto mas vendido es ");
 
             ResultSet resultado = pst.executeQuery();
 
@@ -319,7 +314,7 @@ public class PedidoDAOMySQL implements PedidoDAO {
 
                 Pedido pedido = new Pedido();
 
-                System.out.print(resultado.getInt("Producto"));
+                System.out.printf("El producto mas vendido es %d%n", resultado.getInt("Producto"));
 
             }
         } catch (SQLException ex) {
