@@ -1,7 +1,7 @@
 package controllers;
 
 import models.Pedido;
-import models.Producto;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
