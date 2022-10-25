@@ -15,7 +15,7 @@ public interface PedidoDAO {
 
     void eliminar();
 
-    void marcar();
+    void marcar(int id);
 
     ArrayList<Pedido> get_AllPedidos();
 
