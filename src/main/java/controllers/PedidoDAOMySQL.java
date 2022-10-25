@@ -25,8 +25,8 @@ public class PedidoDAOMySQL implements PedidoDAO {
     public static final String nuevo_pedido = "INSERT INTO `comanda` (`Alumno`, `Producto`, `Fecha`, `Precio`, `Estado`) VALUES ( ?, ?, ?, ?, ?);";
     public static final String eliminar_pedido = "DELETE FROM `comanda` WHERE id=?";
     public static final String marcar_pedido = "UPDATE `comanda` SET `Estado` = 'ENTREGADO' WHERE `comanda`.`id` =? ";
-    public static final String pendientes = "SELECT * FROM `comanda` WHERE Estado = 'Pendiente';";
-    public static final String pedidos_alumno = "SELECT Count(Producto) FROM `comanda` WHERE Alumno = ?;";
+    public static final String pendientes = "SELECT * FROM `comanda` WHERE Estado = 'PENDIENTE' OR 'Pendiente';";
+    public static final String pedidos_alumno = "SELECT * FROM `comanda` WHERE Alumno = ?;";
     public static final String ganancias_mes = "SELECT SUM(Precio) FROM `comanda` WHERE month(Fecha) = MONTH(CURRENT_DATE());";
     public static final String total_clientes = "SELECT count(DISTINCT(Alumno)) FROM `comanda`;";
     public static final String mejor_cliente = "SELECT Count(Alumno) as Mejor, Alumno FROM `comanda`Group by Alumno ORDER by Mejor DESC LIMIT 1;";
@@ -76,15 +76,11 @@ public class PedidoDAOMySQL implements PedidoDAO {
             //Float precio = sci.nextFloat();
             p.setPrecio(prod.getPrecio(id));
 
-
-            sci.close();
-
             pst.setString(1, p.getAlumno());
             pst.setString(2, p.getProducto());
             pst.setString(3, p.getFecha());
             pst.setFloat(4, p.getPrecio());
             pst.setString(5, p.getEstado());
-
 
             if (pst.executeUpdate() > 0) {
 
